@@ -5,8 +5,21 @@ If you were ever programming and thinking that some aspects of the language (e.g
 Forest is an embedded language in the sense that it's embedded in another language. If you program in Forest, you focus on low-level operations (their performance, memory management, ...) when preparing an environment for the Forest code in the host language, and you focus on the computation itself (potentially with meta-data for the compiler) when writing the code in Forest.
 
 There are 3 layers of the whole Forest environment:
-1. `forest-runner-*` - has a function run(file_path, stages, options) that calls `forest-interpreter` and all the libraries
-2. `forest-interpreter-*` (`forest-host-rb`, `forest-host-js`, ...) - it reads a text file and returns an AST (Abstract Syntax Tree) and a functioon that does exactly that. There are a couple of reasons why this function is returned. Forest libraries can use it to parse other files. Forest code can contain snippets in Forest as data and have it evaluated later. The text processed by this code has only 3 keywords: `code`, `block`, `data`. The AST that will be returned by this function has these keywords in internal nodes, and text in leafs.
-2. Core library
-  - `forest-essentials-*` - functions that can be found in almost every forest script
-  - `forest-utils-*` - core library - useful funcntions that are worth learning
+1. `forest-runner-*` - has a function `run_forest(file_path, stages, options)` that calls `forest-interpreter` and all the libraries. This module is the interface for any script written in forest or any language that translates to forest. Currently the only other language is `lamb`, and you can call the script written in it in the following way: `run(lang, file_path, stages, options)`. In the future it will be possible to pass `compile: true` as `options` and cause a compilation of the script in `forest` (or lany language that translates to `forest`) to the host language. This could potentially significantly improve the performence as the compilation process will run optimisations on the code and as `forest` is so simple, static analysis of the code should enable significant performance improvements.
+2. `forest-interpreter-*` (`forest-host-rb`, `forest-host-js`, ...) - it provides one function that gets a stream of code and returns an AST (Abstract Syntax Tree) with leafs being text and internal nodes being one of 3 keywords (`code`, `block`, `data`). This function can be used in several ways:
+- to process the main file of a package (by `forest-runner-*`)
+- `forest` libraries can use it to parse other files
+- `forest` code can contain snippets in `forest` as data and have it evaluated later.
+3. `forest-subcore-*` - functions for `forest-runner-*` and `forest-interpreter-*`, for example to iterate over characters from the forest-file. s
+4. `forest-core-*` - core library; functions that can be found in almost every forest script. `forest-runner-*` and `forest-interpreter-*` often call these functions directly, for example to iterate over characters from the forest-file.
+
+To run the code written in forest, use the following code:
+```
+runner = Runner.new(
+  file: 'path-to-main.forest`
+  dependencies: {
+    core: Core.new
+  }
+)
+runner.run([:macro, :type, :eval])
+```
