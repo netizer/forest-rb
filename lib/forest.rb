@@ -1,3 +1,5 @@
+require 'byebug'
+
 class Forest
   attr_accessor :dependencies
   # options: dependencies, file

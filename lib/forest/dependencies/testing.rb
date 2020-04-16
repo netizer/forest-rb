@@ -7,5 +7,9 @@ class Forest
         { result: false }
       end
     end
+
+    def testing__forest_join(children)
+      children.join
+    end
   end
 end

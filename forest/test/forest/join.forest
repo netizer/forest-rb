@@ -1,0 +1,17 @@
+call
+  block
+    data
+      testing.assert
+    block
+      call
+        block
+          data
+            testing.join
+          block
+            data
+              abc
+            data
+              def
+      data
+        abc
+        def

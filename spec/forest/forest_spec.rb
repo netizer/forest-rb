@@ -7,19 +7,27 @@ require "forest/dependencies/thc"
 require "forest/dependencies/testing"
 
 class Forest
-  class AllDependencies < Dependencies
-    include Forest::Core
+  class MinimalDependencies < Dependencies
     include Forest::Interpreter
-    include Forest::THC
     include Forest::Testing
   end
 end
 
 describe Forest do
-  it "parses a simple forest file" do
+  it "works as expected with keywords + assert function" do
     forest = Forest.new(
-      file: "forest/test/forest/simple.forest",
-      dependencies: Forest::AllDependencies.new
+      file: "forest/test/forest/assert.forest",
+      dependencies: Forest::MinimalDependencies.new
+    )
+    result = forest.run
+
+    expect(result).to eq({ result: true })
+  end
+
+  it "works as expected with keywords + assert + join function" do
+    forest = Forest.new(
+      file: "forest/test/forest/join.forest",
+      dependencies: Forest::MinimalDependencies.new
     )
     result = forest.run
 
