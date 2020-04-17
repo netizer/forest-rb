@@ -31,14 +31,17 @@ class Forest
     end
 
     def forest_keyword_call(children)
-      block = evaluate(children[0])
-      function_name = block[0]
+      ensure_equal(children[0][:command], 'block')
+      ensure_equal(children[0][:children][0][:command], 'data')
+      ensure_equal(children[0][:children][1][:command], 'block')
+      function_name = evaluate(children[0][:children][0])
+      block = children[0][:children][1]
 
       function_name_parts = function_name.strip.split('.')
       method_suffix = "#{FUNCTION_PREFIX}#{function_name_parts.last}"
 
       method_name = (function_name_parts[0..-2] + [method_suffix]).join('__')
-      public_send(method_name, block[1])
+      public_send(method_name, block)
     end
 
     def forest_keyword_block(children)
@@ -89,6 +92,10 @@ class Forest
           return [index / INDENTATION_BASE, line[index..-1]]
         end
       end
+    end
+
+    def ensure_equal(arg1, arg2)
+      raise "ASSERTION ERROR: #{arg1} <> #{arg2}" if arg1 != arg2
     end
   end
 end
