@@ -41,7 +41,8 @@ describe Forest do
   it "passes all the tests for the CGS (context, set, get) module" do
     directory = "#{FOREST_TESTS_DIRECTORY}cgs/"
     files = [
-      "set_followed_by_get_same_context.forest"
+      "set_followed_by_get_same_context.forest",
+      "get_uses_set_from_closer_context.forest"
     ]
     files.each do |file|
       forest = Forest.new(
