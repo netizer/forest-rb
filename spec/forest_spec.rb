@@ -21,7 +21,7 @@ end
 FOREST_TESTS_DIRECTORY = "forest/test/"
 
 describe Forest do
-  it "passes all the tests for the interpreter module" do
+  it "passes all the tests for the interpreter (call, block, data) module" do
     directory = "#{FOREST_TESTS_DIRECTORY}forest/"
     files = [
       "assert.forest",
