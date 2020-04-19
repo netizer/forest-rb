@@ -31,9 +31,9 @@ class Forest
     end
 
     def forest_keyword_call(children)
-      ensure_equal(children[0][:command], 'block')
-      ensure_equal(children[0][:children][0][:command], 'data')
-      ensure_equal(children[0][:children][1][:command], 'block')
+      ensure_equal(children[0][:command], 'block', children[0])
+      ensure_equal(children[0][:children][0][:command], 'data', children[0])
+      ensure_equal(children[0][:children][1][:command], 'block', children[0])
       function_name = evaluate(children[0][:children][0])
       block = children[0][:children][1]
 
@@ -79,7 +79,8 @@ class Forest
         contents: line,
         parent: parent,
         children: [],
-        command: line.strip
+        command: line.strip,
+        child_id: parent ? parent[:children].length : 0
       }
     end
 
@@ -94,8 +95,15 @@ class Forest
       end
     end
 
-    def ensure_equal(arg1, arg2)
-      raise "ASSERTION ERROR: #{arg1} <> #{arg2}" if arg1 != arg2
+    def ensure_equal(arg1, arg2, node)
+      return if arg1 == arg2
+
+      path = ["#{node[:command]}(#{node[:child_id]})"]
+      while node = node[:parent]
+        path.push("#{node[:command]}(#{node[:child_id]})")
+      end
+      path_string = path.reverse.join('.')
+      raise "ASSERTION ERROR: #{arg1} <> #{arg2}; path: #{path_string}"
     end
   end
 end

@@ -4,6 +4,7 @@ require "dependencies"
 require "forest/dependencies/interpreter"
 require "forest/dependencies/testing"
 require "forest/dependencies/cgs"
+require "forest/dependencies/ln"
 
 class Forest
   class MinimalDependencies < Dependencies
@@ -15,6 +16,13 @@ class Forest
     include Forest::Interpreter
     include Forest::Testing
     include Forest::CGS
+  end
+
+  class DependenciesWithLN < Dependencies
+    include Forest::Interpreter
+    include Forest::Testing
+    include Forest::CGS
+    include Forest::LN
   end
 end
 
@@ -48,6 +56,22 @@ describe Forest do
       forest = Forest.new(
         file: "#{directory}#{file}",
         dependencies: Forest::DependenciesWithCGS.new
+      )
+      result = forest.run
+
+      expect(result).to eq({ result: true })
+    end
+  end
+
+  it "passes all the tests for the LN (later, now) module" do
+    directory = "#{FOREST_TESTS_DIRECTORY}ln/"
+    files = [
+      "later_now.forest",
+    ]
+    files.each do |file|
+      forest = Forest.new(
+        file: "#{directory}#{file}",
+        dependencies: Forest::DependenciesWithLN.new
       )
       result = forest.run
 
