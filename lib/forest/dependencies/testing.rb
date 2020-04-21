@@ -7,6 +7,7 @@ class Forest
       if data[0] == data[1]
         { result: true }
       else
+        puts "Assert mismatch: #{data.inspect}"
         { result: false }
       end
     end

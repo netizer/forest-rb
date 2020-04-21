@@ -45,26 +45,24 @@ call
         block
           data
             ln.now
-          block
-            call
+          call
+            block
+              data
+                cgs.get
               block
                 data
-                  cgs.get
-                block
-                  data
-                    second_function
+                  second_function
       call
         block
           data
             ln.now
-          block
-            call
+          call
+            block
+              data
+                cgs.get
               block
                 data
-                  cgs.get
-                block
-                  data
-                    first_function
+                  first_function
       call
         block
           data
@@ -78,5 +76,3 @@ call
                 data
                   testing.logs
                 block
-                  data
-                    nothing

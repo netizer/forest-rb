@@ -5,8 +5,7 @@ class Forest
     end
 
     def ln__forest_now(block)
-      data = evaluate(block)
-      code = data[0]
+      code = evaluate(block)
       evaluate(code)
     end
   end

@@ -33,7 +33,7 @@ class Forest
     def forest_keyword_call(children)
       ensure_equal(children[0][:command], 'block', children[0])
       ensure_equal(children[0][:children][0][:command], 'data', children[0])
-      ensure_equal(children[0][:children][1][:command], 'block', children[0])
+
       function_name = evaluate(children[0][:children][0])
       block = children[0][:children][1]
 
