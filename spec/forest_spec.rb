@@ -54,7 +54,8 @@ describe Forest do
       "ln/",
       Forest::DependenciesWithLN.new,
       [
-        "running_code_later.forest"
+        "running_code_later.forest",
+        "use_definition_scope.forest"
       ]
     )
   end

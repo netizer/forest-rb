@@ -46,5 +46,25 @@ class Forest
         end
       end
     end
+
+    # exposed to other modules
+
+    def cgs_context_snapshot
+      cgs_map = @cgs_name_to_data_id_map.dup
+      cgs_map.each do |key, value|
+        cgs_map[key] = value.dup
+      end
+      {
+        cgs_data: @cgs_data.dup,
+        cgs_name_to_data_id_map: cgs_map
+      }
+    end
+
+    def cgs_replace_context(snapshot)
+      current_context = cgs_context_snapshot
+      @cgs_data = snapshot[:cgs_data]
+      @cgs_name_to_data_id_map = snapshot[:cgs_name_to_data_id_map]
+      current_context
+    end
   end
 end
