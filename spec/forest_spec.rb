@@ -55,7 +55,9 @@ describe Forest do
       Forest::DependenciesWithLN.new,
       [
         "running_code_later.forest",
-        "use_definition_scope.forest"
+        "use_definition_scope.forest",
+        "function_with_arguments.forest",
+        "arguments_have_priority_over_defintion_context.forest"
       ]
     )
   end

@@ -19,5 +19,17 @@ class Forest
       cgs_replace_context(old_context)
       result
     end
+
+    def ln__forest_now_with_args(block)
+      arguments = block[:children][0]
+      body = block[:children][1]
+      code_with_context = evaluate(body)
+      code = code_with_context[:block]
+      old_context = cgs_replace_context(code_with_context[:context])
+      evaluate(arguments)
+      result = evaluate(code)
+      cgs_replace_context(old_context)
+      result
+    end
   end
 end

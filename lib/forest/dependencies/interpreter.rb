@@ -74,12 +74,15 @@ class Forest
     end
 
     def create_node(indent_level, line, parent)
+      command = line.strip
+      raise "Empty lines in source files are not supported" if command == ""
+
       {
         indent: indent_level,
         contents: line,
         parent: parent,
         children: [],
-        command: line.strip,
+        command: command,
         child_id: parent ? parent[:children].length : 0
       }
     end
@@ -104,6 +107,18 @@ class Forest
       end
       path_string = path.reverse.join('.')
       raise "ASSERTION ERROR: #{arg1} <> #{arg2}; path: #{path_string}"
+    end
+
+    # debugger
+    def print_node(node, indent = "")
+      puts indent + node[:command]
+      return unless node[:children]
+
+      indent = indent + "  "
+      node[:children].each do |child|
+        print_node(child, indent)
+      end
+      nil
     end
   end
 end
