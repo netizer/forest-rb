@@ -1,5 +1,5 @@
 class Forest
-  module THC
+  module Loops
     # TBD
   end
 end
