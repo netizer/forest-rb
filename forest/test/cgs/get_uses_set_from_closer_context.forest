@@ -1,42 +1,58 @@
 call
   block
     data
-      cgs.context
-    block
-      call
+      cgs.last
+    call
+      block
+        data
+          cgs.context
         block
-          data
-            cgs.set
-          block
-            data
-              x
-            data
-              1
-      call
-        block
-          data
-            cgs.context
-          block
-            call
+          call
+            block
+              data
+                cgs.set
               block
                 data
-                  cgs.set
-                block
-                  data
-                    x
-                  data
-                    2
-            call
-              block
+                  x
                 data
-                  testing.assert
+                  1
+          call
+            block
+              data
+                cgs.set_value
+              call
                 block
                   data
-                    2
+                    cgs.last
                   call
                     block
                       data
-                        cgs.get
+                        cgs.context
                       block
-                        data
-                          x
+                        call
+                          block
+                            data
+                              cgs.set
+                            block
+                              data
+                                x
+                              data
+                                2
+                        call
+                          block
+                            data
+                              cgs.set_value
+                            call
+                              block
+                                data
+                                  testing.assert
+                                block
+                                  data
+                                    2
+                                  call
+                                    block
+                                      data
+                                        cgs.get
+                                      block
+                                        data
+                                          x

@@ -1,66 +1,36 @@
 call
   block
     data
-      cgs.context
-    block
-      call
+      cgs.last
+    call
+      block
+        data
+          cgs.context
         block
-          data
-            cgs.set
-          block
-            data
-              x
-            data
-              variable in the definition context
-      call
-        block
-          data
-            cgs.set
-          block
-            data
-              function_returning_x
-            call
+          call
+            block
+              data
+                cgs.set
               block
                 data
-                  ln.later
+                  x
+                data
+                  variable in the definition context
+          call
+            block
+              data
+                cgs.set
+              block
+                data
+                  function_returning_x
                 call
                   block
                     data
-                      cgs.context
-                    block
-                      call
-                        block
-                          data
-                            cgs.get
-                          block
-                            data
-                              x
-      call
-        block
-          data
-            cgs.set
-          block
-            data
-              x
-            data
-              variable in the execution context
-      call
-        block
-          data
-            testing.assert
-          block
-            data
-              passed variable
-            call
-              block
-                data
-                  cgs.context
-                block
-                  call
-                    block
-                      data
-                        ln.now_with_args
+                      ln.later
+                    call
                       block
+                        data
+                          cgs.last
                         call
                           block
                             data
@@ -69,16 +39,70 @@ call
                               call
                                 block
                                   data
-                                    cgs.set
-                                  block
-                                    data
-                                      x
-                                    data
-                                      passed variable
+                                    cgs.set_value
+                                  call
+                                    block
+                                      data
+                                        cgs.get
+                                      block
+                                        data
+                                          x
+          call
+            block
+              data
+                cgs.set
+              block
+                data
+                  x
+                data
+                  variable in the execution context
+          call
+            block
+              data
+                cgs.set_value
+              call
+                block
+                  data
+                    testing.assert
+                  block
+                    data
+                      passed variable
+                    call
+                      block
+                        data
+                          cgs.last
                         call
                           block
                             data
-                              cgs.get
+                              cgs.context
                             block
-                              data
-                                function_returning_x
+                              call
+                                block
+                                  data
+                                    cgs.set_value
+                                  call
+                                    block
+                                      data
+                                        ln.now_with_args
+                                      block
+                                        call
+                                          block
+                                            data
+                                              cgs.context
+                                            block
+                                              call
+                                                block
+                                                  data
+                                                    cgs.set
+                                                  block
+                                                    data
+                                                      x
+                                                    data
+                                                      passed variable
+                                        call
+                                          block
+                                            data
+                                              cgs.get
+                                            block
+                                              data
+                                                function_returning_x

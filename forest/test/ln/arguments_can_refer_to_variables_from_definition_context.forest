@@ -22,7 +22,7 @@ call
                 cgs.set
               block
                 data
-                  function_returning_x
+                  some_function
                 call
                   block
                     data
@@ -30,23 +30,9 @@ call
                     call
                       block
                         data
-                          cgs.last
-                        call
-                          block
-                            data
-                              cgs.context
-                            block
-                              call
-                                block
-                                  data
-                                    cgs.set_value
-                                  call
-                                    block
-                                      data
-                                        cgs.get
-                                      block
-                                        data
-                                          x
+                          cgs.get
+                        data
+                          y
           call
             block
               data
@@ -66,28 +52,46 @@ call
                     testing.assert
                   block
                     data
-                      1
+                      2
                     call
                       block
                         data
-                          cgs.last
-                        call
-                          block
-                            data
-                              cgs.context
+                          ln.now_with_args
+                        block
+                          call
                             block
-                              call
-                                block
-                                  data
-                                    cgs.set_value
-                                  call
+                              data
+                                cgs.context
+                              block
+                                call
+                                  block
+                                    data
+                                      cgs.set
                                     block
                                       data
-                                        ln.now
+                                        y
                                       call
                                         block
                                           data
                                             cgs.get
+                                          data
+                                            x
+                                call
+                                  block
+                                    data
+                                      cgs.set
+                                    block
+                                      data
+                                        result
+                                      call
+                                        block
+                                          data
+                                            cgs.all
                                           block
-                                            data
-                                              function_returning_x
+                          call
+                            block
+                              data
+                                cgs.get
+                              block
+                                data
+                                  some_function

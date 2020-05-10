@@ -2,30 +2,70 @@ class Forest
   module CGS
     attr_accessor :cgs_data
     attr_accessor :cgs_name_to_data_id_map
+    # how many times a name was assigned in a context
+    attr_accessor :cgs_context_name_counts
+    attr_accessor :cgs_context_sizes
 
     def cgs__forest_context(block)
       setup_data
-      new_names = []
-      data = evaluate(block)
-      cleanup_data(new_names)
-      data.last
+      evaluate(block)
+      # TODO: reason - we need set_value to make this work
+      # and we need a list of all values in a context (not only keys)
+      result = @cgs_context_name_counts.last.map do |name, count|
+        [name, @cgs_data[@cgs_name_to_data_id_map[name].last]]
+      end.to_h
+      cleanup_data
+      result
     end
 
     def cgs__forest_get(block)
       data = evaluate(block)
       name = data[0].strip
-      id = @cgs_name_to_data_id_map[name].last
+      data_ids = @cgs_name_to_data_id_map[name]
+      raise "get: #{name} is unknown in #{@interpreter_file}:#{@interpreter_line}:#{@interpreter_row}." unless data_ids
+      id = data_ids.last
       @cgs_data[id]
     end
 
     def cgs__forest_set(block)
       data = evaluate(block)
-      name = data[0].strip
+      key = data[0].strip
       value = data[1]
+      x = internal_set(key, value)
+      { type: :pair, key: key, value: value }
+    end
+
+    def cgs__forest_set_value(block)
+      data = evaluate(block)
+      internal_set(@cgs_context_sizes.last, data)
+      { type: :value, value: data }
+    end
+
+    def internal_set(name, value)
       @cgs_name_to_data_id_map[name] ||= []
       id = @cgs_data.length
       @cgs_data.push(value)
       @cgs_name_to_data_id_map[name].push(id)
+
+      @cgs_context_name_counts.last[name] ||= 0
+      @cgs_context_name_counts.last[name] += 1
+      @cgs_context_sizes[@cgs_context_sizes.length - 1] = @cgs_context_sizes.last + 1
+    end
+
+    def cgs__forest_last(block)
+      evaluate(block).values.last
+    end
+
+    def cgs__forest_all(block)
+      # TODO: I should keep just a boolean, not the count
+      # (no need to store old values)
+      result = {}
+      @cgs_context_name_counts.last.each do |name, count|
+        if count && count > 0
+          result[name] = @cgs_data[@cgs_name_to_data_id_map[name].last]
+        end
+      end
+      result
     end
 
     private
@@ -33,18 +73,28 @@ class Forest
     def setup_data
       @cgs_data ||= []
       @cgs_name_to_data_id_map ||= {}
+
+      @cgs_context_name_counts ||= []
+      @cgs_context_name_counts << {}
+      @cgs_context_sizes ||= []
+      @cgs_context_sizes << 0
     end
 
-    def cleanup_data(names)
-      names.each do |name|
-        if @cgs_name_to_data_id_map[name].length == 1
-          id = @cgs_name_to_data_id_map[name].last
-          @cgs_data[id] = nil
+    def cleanup_data
+      @cgs_context_name_counts.last.each do |name, count|
+        if @cgs_name_to_data_id_map[name].length == count
+          @cgs_name_to_data_id_map[name].each do |id|
+            @cgs_data[id] = nil
+          end
           @cgs_name_to_data_id_map.delete(name)
         else
-          @cgs_name_to_data_id_map[name].pop
+          count.times { @cgs_name_to_data_id_map[name].pop }
         end
+        @cgs_context_name_counts.last.delete(name)
       end
+      @cgs_context_name_counts.pop
+      @cgs_context_sizes.pop
+
     end
 
     # exposed to other modules

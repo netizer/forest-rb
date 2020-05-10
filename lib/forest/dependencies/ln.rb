@@ -25,11 +25,20 @@ class Forest
       body = block[:children][1]
       code_with_context = evaluate(body)
       code = code_with_context[:block]
+      arguments_result = evaluate(arguments)
       old_context = cgs_replace_context(code_with_context[:context])
-      evaluate(arguments)
+      setup_data
+      explode(arguments_result)
       result = evaluate(code)
+      cleanup_data
       cgs_replace_context(old_context)
       result
+    end
+
+    def explode(hash)
+      hash.each do |key, value|
+        internal_set(key, value)
+      end
     end
   end
 end

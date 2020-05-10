@@ -1,78 +1,86 @@
 call
   block
     data
-      cgs.context
-    block
-      call
+      cgs.last
+    call
+      block
+        data
+          cgs.context
         block
-          data
-            cgs.set
-          block
-            data
-              first_function
-            call
-              block
-                data
-                  ln.later
-                block
-                  call
-                    block
-                      data
-                        testing.log
-                      block
-                        data
-                          defined first
-      call
-        block
-          data
-            cgs.set
-          block
-            data
-              second_function
-            call
-              block
-                data
-                  ln.later
-                block
-                  call
-                    block
-                      data
-                        testing.log
-                      block
-                        data
-                          defined second
-      call
-        block
-          data
-            ln.now
           call
             block
               data
-                cgs.get
-              block
-                data
-                  second_function
-      call
-        block
-          data
-            ln.now
-          call
-            block
-              data
-                cgs.get
+                cgs.set
               block
                 data
                   first_function
-      call
-        block
-          data
-            testing.assert
-          block
-            data
-              defined second
-              defined first
-            call
+                call
+                  block
+                    data
+                      ln.later
+                    block
+                      call
+                        block
+                          data
+                            testing.log
+                          block
+                            data
+                              defined first
+          call
+            block
+              data
+                cgs.set
               block
                 data
-                  testing.logs
+                  second_function
+                call
+                  block
+                    data
+                      ln.later
+                    block
+                      call
+                        block
+                          data
+                            testing.log
+                          block
+                            data
+                              defined second
+          call
+            block
+              data
+                ln.now
+              call
                 block
+                  data
+                    cgs.get
+                  block
+                    data
+                      second_function
+          call
+            block
+              data
+                ln.now
+              call
+                block
+                  data
+                    cgs.get
+                  block
+                    data
+                      first_function
+          call
+            block
+              data
+                cgs.set_value
+              call
+                block
+                  data
+                    testing.assert
+                  block
+                    data
+                      defined second
+                      defined first
+                    call
+                      block
+                        data
+                          testing.logs
+                        block

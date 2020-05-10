@@ -1,28 +1,36 @@
 call
   block
     data
-      cgs.context
-    block
-      call
+      cgs.last
+    call
+      block
+        data
+          cgs.context
         block
-          data
-            cgs.set
-          block
-            data
-              x
-            data
-              1
-      call
-        block
-          data
-            testing.assert
-          block
-            data
-              1
-            call
+          call
+            block
+              data
+                cgs.set
               block
                 data
-                  cgs.get
+                  x
+                data
+                  1
+          call
+            block
+              data
+                cgs.set_value
+              call
                 block
                   data
-                    x
+                    testing.assert
+                  block
+                    data
+                      1
+                    call
+                      block
+                        data
+                          cgs.get
+                        block
+                          data
+                            x

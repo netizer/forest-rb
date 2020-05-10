@@ -58,7 +58,8 @@ describe Forest do
         "use_definition_scope.forest",
         "function_with_arguments.forest",
         "arguments_have_priority_over_defintion_context.forest",
-        "function_argument_is_called_in_its_definition_context.forest"
+        "function_argument_is_called_in_its_definition_context.forest",
+        "arguments_can_refer_to_variables_from_definition_context.forest"
       ]
     )
   end
