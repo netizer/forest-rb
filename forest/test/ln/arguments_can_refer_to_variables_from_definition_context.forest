@@ -1,97 +1,81 @@
 call
-  block
+  data
+    cgs.last
+  call
     data
-      cgs.last
-    call
-      block
+      cgs.context
+    block
+      call
         data
-          cgs.context
+          cgs.set
         block
+          data
+            x
+          data
+            1
+      call
+        data
+          cgs.set
+        block
+          data
+            some_function
           call
-            block
+            data
+              ln.later
+            call
               data
-                cgs.set
-              block
-                data
-                  x
-                data
-                  1
-          call
-            block
+                cgs.get
               data
-                cgs.set
+                y
+      call
+        data
+          cgs.set
+        block
+          data
+            x
+          data
+            2
+      call
+        data
+          cgs.set_value
+        call
+          data
+            testing.assert
+          block
+            data
+              2
+            call
+              data
+                ln.now_with_args
               block
-                data
-                  some_function
                 call
+                  data
+                    cgs.context
                   block
-                    data
-                      ln.later
                     call
+                      data
+                        cgs.set
                       block
-                        data
-                          cgs.get
                         data
                           y
-          call
-            block
-              data
-                cgs.set
-              block
-                data
-                  x
-                data
-                  2
-          call
-            block
-              data
-                cgs.set_value
-              call
-                block
-                  data
-                    testing.assert
-                  block
-                    data
-                      2
+                        call
+                          data
+                            cgs.get
+                          data
+                            x
                     call
+                      data
+                        cgs.set
                       block
                         data
-                          ln.now_with_args
-                        block
-                          call
-                            block
-                              data
-                                cgs.context
-                              block
-                                call
-                                  block
-                                    data
-                                      cgs.set
-                                    block
-                                      data
-                                        y
-                                      call
-                                        block
-                                          data
-                                            cgs.get
-                                          data
-                                            x
-                                call
-                                  block
-                                    data
-                                      cgs.set
-                                    block
-                                      data
-                                        result
-                                      call
-                                        block
-                                          data
-                                            cgs.all
-                                          block
-                          call
-                            block
-                              data
-                                cgs.get
-                              block
-                                data
-                                  some_function
+                          result
+                        call
+                          data
+                            cgs.all
+                          block
+                call
+                  data
+                    cgs.get
+                  block
+                    data
+                      some_function

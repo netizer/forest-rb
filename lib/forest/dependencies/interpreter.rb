@@ -38,18 +38,17 @@ class Forest
     end
 
     def forest_keyword_call(children)
-      ensure_equal(children[0][:command], 'block', children[0])
-      ensure_equal(children[0][:children][0][:command], 'data', children[0])
+      ensure_equal(children[0][:command], 'data', children[0])
 
       line_number = @interpreter_line
-      function_name = evaluate(children[0][:children][0])
-      block = children[0][:children][1]
+      function_name = children[0][:children][0][:command]
+      body = children[1]
 
-      function_name_parts = function_name.strip.split('.')
+      function_name_parts = function_name.split('.')
       method_suffix = "#{FUNCTION_PREFIX}#{function_name_parts.last}"
 
       method_name = (function_name_parts[0..-2] + [method_suffix]).join('__')
-      public_send(method_name, block)
+      public_send(method_name, body)
     end
 
     def forest_keyword_block(children)
