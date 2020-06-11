@@ -56,18 +56,6 @@ class Forest
       evaluate(block).values.last
     end
 
-    def cgs__forest_all(block)
-      # TODO: I should keep just a boolean, not the count
-      # (no need to store old values)
-      result = {}
-      @cgs_context_name_counts.last.each do |name, count|
-        if count && count > 0
-          result[name] = @cgs_data[@cgs_name_to_data_id_map[name].last]
-        end
-      end
-      result
-    end
-
     private
 
     def setup_data

@@ -63,16 +63,6 @@ call
                             cgs.get
                           data
                             x
-                    call
-                      data
-                        cgs.set
-                      block
-                        data
-                          result
-                        call
-                          data
-                            cgs.all
-                          block
                 call
                   data
                     cgs.get
