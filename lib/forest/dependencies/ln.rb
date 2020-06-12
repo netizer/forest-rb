@@ -13,6 +13,10 @@ class Forest
 
     def ln__forest_now(block)
       code_with_context = evaluate(block)
+      call_code_with_context(code_with_context)
+    end
+
+    def call_code_with_context(code_with_context)
       code = code_with_context[:block]
       old_context = cgs_replace_context(code_with_context[:context])
       result = evaluate(code)

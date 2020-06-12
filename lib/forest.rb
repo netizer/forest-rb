@@ -1,4 +1,6 @@
-require 'byebug'
+# require "rubygems"
+# require "bundler/setup"
+require "byebug"
 
 class Forest
   attr_accessor :dependencies
@@ -11,5 +13,13 @@ class Forest
   def run(options = {})
     @run_options = options
     dependencies.eval_file(@init_options[:file])
+  end
+
+  def command(options = {})
+    @run_options = options
+    dependencies.run_command(
+      init_options: @init_options,
+      run_options: @run_options
+    )
   end
 end

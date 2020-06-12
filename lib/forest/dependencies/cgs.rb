@@ -9,8 +9,6 @@ class Forest
     def cgs__forest_context(block)
       setup_data
       evaluate(block)
-      # TODO: reason - we need set_value to make this work
-      # and we need a list of all values in a context (not only keys)
       result = @cgs_context_name_counts.last.map do |name, count|
         [name, @cgs_data[@cgs_name_to_data_id_map[name].last]]
       end.to_h
@@ -22,6 +20,7 @@ class Forest
       data = evaluate(block)
       name = data[0].strip
       data_ids = @cgs_name_to_data_id_map[name]
+      # TODO: change to a nicer message (and possibly build a module for messages)
       raise "get: #{name} is unknown in #{@interpreter_file}:#{@interpreter_line}:#{@interpreter_row}." unless data_ids
       id = data_ids.last
       @cgs_data[id]
@@ -31,7 +30,7 @@ class Forest
       data = evaluate(block)
       key = data[0].strip
       value = data[1]
-      x = internal_set(key, value)
+      internal_set(key, value)
       { type: :pair, key: key, value: value }
     end
 

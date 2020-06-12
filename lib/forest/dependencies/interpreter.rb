@@ -9,13 +9,17 @@ class Forest
     attr_accessor :interpreter_file
 
     def eval_file(file)
-      @interpreter_file = file
-      files_content = read(file)
-      tree = parse(files_content)
+      tree = parse_file(file)
       evaluate(tree)
     end
 
     private
+
+    def parse_file(file)
+      @interpreter_file = file
+      files_content = read(file)
+      parse(files_content)
+    end
 
     def read(file)
       File.readlines(file)
@@ -48,7 +52,14 @@ class Forest
       method_suffix = "#{FUNCTION_PREFIX}#{function_name_parts.last}"
 
       method_name = (function_name_parts[0..-2] + [method_suffix]).join('__')
+      unless public_methods.include?(method_name.to_sym)
+        print_error(children[0][:parent], no_method_error_message(function_name, method_name))
+      end
       public_send(method_name, body)
+    end
+
+    def no_method_error_message(function_name, method_name)
+      "Unknown forest action: '#{function_name}'. It looks like you should create the method '#{method_name}' in one of the dependencies module (host environment - ruby)."
     end
 
     def forest_keyword_block(children)
@@ -59,7 +70,7 @@ class Forest
 
     def forest_keyword_data(children)
       children.map do |child|
-        child[:contents]
+        child[:command]
       end.join
     end
 
@@ -86,7 +97,6 @@ class Forest
 
       {
         indent: indent_level,
-        contents: line,
         parent: parent,
         children: [],
         command: command,
@@ -120,7 +130,7 @@ class Forest
 
     # debugger
     def print_node(node, indent = "")
-      puts indent + node[:command] + "(#{node[:line]})"
+      puts indent + node[:command] + "(#{node[:line]})!"
       return unless node[:children]
 
       indent = indent + "  "
@@ -128,6 +138,14 @@ class Forest
         print_node(child, indent)
       end
       nil
+    end
+
+    def print_error(node, message)
+      puts "FOREST ERROR"
+      puts "Message: #{message}"
+      puts "Location: #{@interpreter_file}:#{node[:line]}:#{node[:row]}"
+      puts "Command: #{node[:command]}"
+      exit 1
     end
   end
 end
