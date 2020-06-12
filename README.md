@@ -1,6 +1,10 @@
+# Forest
+
+## Description
+
 Forest is a programming language. It has some cool properties, and a couple of surprising ones. It is not meant to be used directly to write programs, but rather other languages can be translated to it.
 
-If you were ever programming and thinking that some aspects of the language (e.g. readable syntax) are good for the developer, but other ones (e.g. memory management, performance, ...) seem like something that could be handled better by some software than directly by a human being, then that's the exact kind of thinking that Forest was born from. The main goal is to separate the expression of comutation and low level operations that can be handled automatically depending on the platform and the computation itself.
+If you were ever programming and thinking that some aspects of the language (e.g. readable syntax) are good for the developer, but other ones (e.g. memory management, performance, ...) seem like something that could be handled better by some software than directly by a human being, then that's the exact kind of thinking that Forest was born from. The main goal is to separate the low level operations that can be handled and optimised automatically depending on the platform and the computation itself.
 
 Forest is an embedded language in the sense that it's embedded in another language. If you program in Forest, you focus on low-level operations (their performance, memory management, ...) when preparing an environment for the Forest code in the host language, and you focus on the computation itself (potentially with meta-data for the compiler) when writing the code in Forest.
 
@@ -23,3 +27,11 @@ runner = Runner.new(
 )
 runner.run([:macro, :type, :eval])
 ```
+
+## Installation
+
+You can use this library as a gem (just add `gem forest-rb` to your `Gemfile` and run `bundle install`), or you can install a `forest` command. To do that, you could for example (instructions are for MacOS):
+1. Clone this repository (e.g. to `~/xyz/forest-rb`)
+2. Go to `/usr/local/bin`
+3. Run `ln -s ~/xyz/forest-rb/lib/command.rb forest`
+4. Done. From now on you can just use `forest` command (e.g. `forest help`)
