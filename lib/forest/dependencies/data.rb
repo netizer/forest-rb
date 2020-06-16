@@ -5,5 +5,11 @@ class Forest
       value = evaluate(block[:children][1])
       value[id.to_i]
     end
+
+    def data__forest_hash_get(node)
+      key = evaluate(node[:children][0])
+      hash = evaluate(node[:children][1])
+      hash[key]
+    end
   end
 end

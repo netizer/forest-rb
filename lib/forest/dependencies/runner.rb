@@ -12,6 +12,12 @@ class Forest
     attr_accessor :runner_application
     attr_accessor :runner_command_parts
 
+    def  runner__forest_include_task_environment(children)
+      cgs_internal_set('command_parts', @runner_command_parts)
+      cgs_internal_set('dependencies', @runner_application['dependencies'])
+    end
+
+
     def runner__forest_application(node)
       @runner_application = evaluate(node)
     end

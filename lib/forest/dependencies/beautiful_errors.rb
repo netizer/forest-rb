@@ -19,7 +19,7 @@ class Forest
     def unknown_name_error_message(name)
       "The action 'get' was called with the argument '#{name}' but this name is not available in the scope.\n" +
       "Possible causes:\n" +
-      " * Maybe you misspelled the argument of 'get'?"
+      " * Maybe you misspelled '#{name}'?"
     end
 
     def missing_app_file_error_message(glob)
@@ -34,14 +34,15 @@ class Forest
     def unknown_keyword_error_message(keyword)
       "Unknown keyword: '#{keyword}'.\n" +
       "Possible causes:\n" +
-      " * Maybe '#{keyword}' was used in a groundcover file that was comiled to forest, but '#{keyword}' is not defined in the groundcover template file?\n" +
+      " * Maybe '#{keyword}' was used in a groundcover file that was comiled to forest, but it is not defined in the groundcover template file?\n" +
       " * Maybe '#{keyword} is defined in the groundvover template but its children have different structure than the template expects."
     end
 
     def no_method_error_message(function_name, method_name)
+      module_name = method_name.split('__').first
       "Unknown forest action: '#{function_name}'.\n" +
       "Possible reasones:\n" +
-      " * It looks like you should create the method '#{method_name}' in one of the dependencies module (host environment - ruby)."
+      " * It looks like you should create the method '#{method_name}' in the '#{module_name}' capability module."
     end
   end
 end

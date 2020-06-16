@@ -128,9 +128,9 @@ class Forest
       raise "ASSERTION ERROR: #{arg1} <> #{arg2}; path: #{path_string}"
     end
 
-    # debugger
+    # Debugger
     def print_node(node, indent = "")
-      puts indent + node[:command] + "(#{node[:line]})!"
+      puts "#{node[:line].to_s.rjust(6, ' ')}: #{indent}#{node[:command]}"
       return unless node[:children]
 
       indent = indent + "  "

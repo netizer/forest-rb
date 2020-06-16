@@ -41,7 +41,7 @@ class Forest
 
     def explode(hash)
       hash.each do |key, value|
-        internal_set(key, value)
+        cgs_internal_set(key, value)
       end
     end
   end

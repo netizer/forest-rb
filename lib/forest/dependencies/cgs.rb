@@ -31,17 +31,17 @@ class Forest
       data = evaluate(block)
       key = data[0].strip
       value = data[1]
-      internal_set(key, value)
+      cgs_internal_set(key, value)
       { type: :pair, key: key, value: value }
     end
 
     def cgs__forest_set_value(block)
       data = evaluate(block)
-      internal_set(@cgs_context_sizes.last, data)
+      cgs_internal_set(@cgs_context_sizes.last, data)
       { type: :value, value: data }
     end
 
-    def internal_set(name, value)
+    def cgs_internal_set(name, value)
       @cgs_name_to_data_id_map[name] ||= []
       id = @cgs_data.length
       @cgs_data.push(value)
