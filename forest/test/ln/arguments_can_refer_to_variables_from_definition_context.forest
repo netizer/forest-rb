@@ -66,6 +66,5 @@ call
                 call
                   data
                     cgs.get
-                  block
-                    data
-                      some_function
+                  data
+                    some_function

@@ -43,18 +43,16 @@ call
         call
           data
             cgs.get
-          block
-            data
-              second_function
+          data
+            second_function
       call
         data
           ln.now
         call
           data
             cgs.get
-          block
-            data
-              first_function
+          data
+            first_function
       call
         data
           cgs.set_value

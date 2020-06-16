@@ -13,6 +13,36 @@ class Forest
       evaluate(tree)
     end
 
+
+    def forest_keyword_call(children)
+      ensure_equal(children[0][:command], 'data', children[0])
+
+      line_number = @interpreter_line
+      function_name = children[0][:children][0][:command]
+      body = children[1]
+
+      function_name_parts = function_name.split('.')
+      method_suffix = "#{FUNCTION_PREFIX}#{function_name_parts.last}"
+
+      method_name = (function_name_parts[0..-2] + [method_suffix]).join('__')
+      unless public_methods.include?(method_name.to_sym)
+        rise_forest_code_error(children[0][:parent], no_method_error_message(function_name, method_name))
+      end
+      public_send(method_name, body)
+    end
+
+    def forest_keyword_block(children)
+      children.map do |child|
+        evaluate(child)
+      end
+    end
+
+    def forest_keyword_data(children)
+      children.map do |child|
+        child[:command]
+      end.join
+    end
+
     private
 
     def parse_file(file)
@@ -38,40 +68,10 @@ class Forest
       method_name = "#{KEYWORD_PREFIX}#{node[:command]}"
       @interpreter_line = node[:line]
       @interpreter_row = node[:row]
+      unless methods.include?(method_name.to_sym)
+        rise_forest_code_error(node, unknown_keyword_error_message(node[:command]))
+      end
       send(method_name, node[:children])
-    end
-
-    def forest_keyword_call(children)
-      ensure_equal(children[0][:command], 'data', children[0])
-
-      line_number = @interpreter_line
-      function_name = children[0][:children][0][:command]
-      body = children[1]
-
-      function_name_parts = function_name.split('.')
-      method_suffix = "#{FUNCTION_PREFIX}#{function_name_parts.last}"
-
-      method_name = (function_name_parts[0..-2] + [method_suffix]).join('__')
-      unless public_methods.include?(method_name.to_sym)
-        print_error(children[0][:parent], no_method_error_message(function_name, method_name))
-      end
-      public_send(method_name, body)
-    end
-
-    def no_method_error_message(function_name, method_name)
-      "Unknown forest action: '#{function_name}'. It looks like you should create the method '#{method_name}' in one of the dependencies module (host environment - ruby)."
-    end
-
-    def forest_keyword_block(children)
-      children.map do |child|
-        evaluate(child)
-      end
-    end
-
-    def forest_keyword_data(children)
-      children.map do |child|
-        child[:command]
-      end.join
     end
 
     def parse_line(line, current_node, line_nr)
@@ -138,14 +138,6 @@ class Forest
         print_node(child, indent)
       end
       nil
-    end
-
-    def print_error(node, message)
-      puts "FOREST ERROR"
-      puts "Message: #{message}"
-      puts "Location: #{@interpreter_file}:#{node[:line]}:#{node[:row]}"
-      puts "Command: #{node[:command]}"
-      exit 1
     end
   end
 end

@@ -35,9 +35,8 @@ call
                     call
                       data
                         cgs.get
-                      block
-                        data
-                          x
+                      data
+                        x
       call
         data
           cgs.set
@@ -71,9 +70,8 @@ call
                       call
                         data
                           cgs.get
-                        block
-                          data
-                            function_passed_as_argument
+                        data
+                          function_passed_as_argument
       call
         data
           cgs.set_value
@@ -110,12 +108,10 @@ call
                                 call
                                   data
                                     cgs.get
-                                  block
-                                    data
-                                      function_passed_as_argument
+                                  data
+                                    function_passed_as_argument
                         call
                           data
                             cgs.get
-                          block
-                            data
-                              function_with_passed_function
+                          data
+                            function_with_passed_function

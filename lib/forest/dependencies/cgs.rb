@@ -17,11 +17,12 @@ class Forest
     end
 
     def cgs__forest_get(block)
-      data = evaluate(block)
-      name = data[0].strip
+      name = evaluate(block)
+      name = name.strip
       data_ids = @cgs_name_to_data_id_map[name]
-      # TODO: change to a nicer message (and possibly build a module for messages)
-      raise "get: #{name} is unknown in #{@interpreter_file}:#{@interpreter_line}:#{@interpreter_row}." unless data_ids
+      unless data_ids
+        rise_forest_code_error(block[:parent], unknown_name_error_message(name))
+      end
       id = data_ids.last
       @cgs_data[id]
     end

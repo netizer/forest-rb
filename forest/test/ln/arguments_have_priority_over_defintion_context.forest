@@ -35,9 +35,8 @@ call
                     call
                       data
                         cgs.get
-                      block
-                        data
-                          x
+                      data
+                        x
       call
         data
           cgs.set
@@ -84,6 +83,5 @@ call
                         call
                           data
                             cgs.get
-                          block
-                            data
-                              function_returning_x
+                          data
+                            function_returning_x

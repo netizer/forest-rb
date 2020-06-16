@@ -25,6 +25,5 @@ call
             call
               data
                 cgs.get
-              block
-                data
-                  x
+              data
+                x

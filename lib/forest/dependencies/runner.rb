@@ -20,18 +20,9 @@ class Forest
       puts evaluate(node)
     end
 
-    def missing_app_file_error_message(glob)
-      parts = glob.split('/')
-      file = parts.last
-      dir = parts[0..-2].join('/')
-      "We expected '#{file}' file to be present in the '#{dir}' directory. It's not there. Is it possible that you are in the wrong directory?"
-    end
-
     def eval_file_with_optional_frontend(file, glob)
-      if file.nil?
-        puts missing_app_file_error_message(glob)
-        exit 1
-      end
+      print_general_error(missing_app_file_error_message(glob)) if file.nil?
+
       extension = file.split(".").last
       if extension == 'forest'
         eval_file(file)
@@ -52,6 +43,7 @@ class Forest
 
     def eval_file_with_frontend(file, extension)
       interpreter = INTERPRETERS[extension][:method]
+      @interpreter_file = file
       forest = public_send(interpreter, file)
       evaluate(forest)
     end
