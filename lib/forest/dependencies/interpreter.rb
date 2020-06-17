@@ -4,9 +4,26 @@ class Forest
     KEYWORD_PREFIX = 'forest_keyword_'
     FUNCTION_PREFIX = 'forest_'
 
-    attr_accessor :interpreter_line
-    attr_accessor :interpreter_row
     attr_accessor :interpreter_file
+    attr_accessor :interpreter_stack_trace
+
+    def interpreter_add_stack_trace(options = {})
+      @interpreter_stack_trace ||= []
+      @interpreter_stack_trace << options
+    end
+
+    # Refines line and row on evaluate (the stack trace on call
+    # can be pretty far from the actual point where we have a problem)
+    def interpreter_update_stack_trace(options = {})
+      return unless @interpreter_stack_trace && @interpreter_stack_trace.last
+
+      stack = @interpreter_stack_trace.last
+      stack.merge! options
+    end
+
+    def remove_stack_trace
+      @interpreter_stack_trace.pop
+    end
 
     def eval_file(file)
       tree = parse_file(file)
@@ -17,7 +34,6 @@ class Forest
     def forest_keyword_call(children)
       ensure_equal(children[0][:command], 'data', children[0])
 
-      line_number = @interpreter_line
       function_name = children[0][:children][0][:command]
       body = children[1]
 
@@ -25,10 +41,18 @@ class Forest
       method_suffix = "#{FUNCTION_PREFIX}#{function_name_parts.last}"
 
       method_name = (function_name_parts[0..-2] + [method_suffix]).join('__')
+      interpreter_add_stack_trace(
+        line: children[0][:line],
+        row: children[0][:row],
+        file: interpreter_file,
+        command: function_name
+      )
       unless public_methods.include?(method_name.to_sym)
         rise_forest_code_error(children[0][:parent], no_method_error_message(function_name, method_name))
       end
-      public_send(method_name, body)
+      result = public_send(method_name, body)
+      remove_stack_trace
+      result
     end
 
     def forest_keyword_block(children)
@@ -66,8 +90,7 @@ class Forest
 
     def evaluate(node)
       method_name = "#{KEYWORD_PREFIX}#{node[:command]}"
-      @interpreter_line = node[:line]
-      @interpreter_row = node[:row]
+      interpreter_update_stack_trace(line: node[:line], row: node[:row])
       unless methods.include?(method_name.to_sym)
         rise_forest_code_error(node, unknown_keyword_error_message(node[:command]))
       end
@@ -129,15 +152,32 @@ class Forest
     end
 
     # Debugger
-    def print_node(node, indent = "")
-      puts "#{node[:line].to_s.rjust(6, ' ')}: #{indent}#{node[:command]}"
-      return unless node[:children]
+    def print_node(node)
+      puts node_context_to_lines(node).join("\n")
+    end
+
+    def node_context_to_lines(node)
+      context = node_context(node)
+      delta = context.last[:line].to_s.length - context.first[:line].to_s.length
+      lines = []
+      context.map do |line|
+        justed_line_nr = line[:line].to_s.rjust(delta, ' ')
+        lines << "#{justed_line_nr}: #{line[:indent]}#{line[:command]}"
+      end
+      lines[0] = "=> #{lines[0]}"
+      lines[1..-1].each_with_index {|line, id| lines[id + 1] = "   #{line}" }
+      lines
+    end
+
+    def node_context(node, indent = "", result = [])
+      result << { line: node[:line], indent: indent, command: node[:command] }
+      return result unless node[:children]
 
       indent = indent + "  "
       node[:children].each do |child|
-        print_node(child, indent)
+        node_context(child, indent, result)
       end
-      nil
+      result
     end
   end
 end

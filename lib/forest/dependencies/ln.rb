@@ -32,6 +32,7 @@ class Forest
       arguments_result = evaluate(arguments)
       old_context = cgs_replace_context(code_with_context[:context])
       setup_data
+      # TODO: assign forest_args and let functions explode them by themselves
       explode(arguments_result)
       result = evaluate(code)
       cleanup_data

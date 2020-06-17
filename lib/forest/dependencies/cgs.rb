@@ -17,8 +17,11 @@ class Forest
     end
 
     def cgs__forest_get(block)
-      name = evaluate(block)
-      name = name.strip
+      name = evaluate(block).strip
+      cgs_internal_get(name)
+    end
+
+    def cgs_internal_get(name)
       data_ids = @cgs_name_to_data_id_map[name]
       unless data_ids
         rise_forest_code_error(block[:parent], unknown_name_error_message(name))
