@@ -12,7 +12,7 @@ class Forest
     attr_accessor :runner_application
     attr_accessor :runner_command_parts
 
-    def  runner__forest_include_task_environment(children)
+    def runner__forest_include_task_environment(children)
       cgs_internal_set('command_parts', @runner_command_parts)
       cgs_internal_set('dependencies', @runner_application['dependencies'])
     end
@@ -88,6 +88,30 @@ class Forest
       FileUtils.mkdir_p("vendor")
       dir_name = dependency.split('/').last
       FileUtils.copy_entry dependency[:path], "vendor/#{dir_name}"
+    end
+
+    def runner__forest_explode_args_selectively(node)
+      passed_args = cgs_internal_get('args')
+      node[:children].each do |child|
+        old_name = evaluate(child[:children][0])
+        old_name = old_name.to_i if old_name.to_i.to_s == old_name
+        new_name = evaluate(child[:children][1])
+        new_name = new_name.to_i if new_name.to_i.to_s == new_name
+        cgs_internal_set(new_name, passed_args[old_name])
+      end
+    end
+
+    def runner__forest_resolve_dependency(node)
+      dependency = evaluate(node)
+      name = dependency[0]
+      options = dependency[1]
+      unless options['source'] == 'local'
+        raise "For now only source = local option of dependency management is implemented."
+      end
+      FileUtils.mkdir_p 'vendor'
+      destination = File.join('vendor', options['directory_name'])
+      FileUtils.rm_rf(destination)
+      FileUtils.copy_entry options['path'], destination
     end
   end
 end

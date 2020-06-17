@@ -52,7 +52,7 @@ class Forest
     end
 
     def print_general_error(message)
-      puts "FOREST ERROR:"
+      puts bold("Forest Error")
       puts message
       exit 1
     end
@@ -70,7 +70,7 @@ class Forest
       file = parts.last
       dir = parts[0..-2].join('/')
       "File doesn't exist: #{glob}\n" +
-      "Possible causes:\n"
+      "Possible causes:\n" +
       " * Maybe you are in the wrong directory?"
     end
 
@@ -87,7 +87,8 @@ class Forest
       namespace_part = module_name ? "in the '#{module_name}'" : "in some"
       "Unknown forest action: '#{bold(function_name)}'.\n" +
       "Possible reasones:\n" +
-      " * Maybe try to create the method '#{method_name}' #{namespace_part} capability module."
+      " * Maybe try to create the method '#{method_name}' #{namespace_part} capability module.\n" +
+      " * If the method exists, then maybe its module is not included in the dependencies class passed to Forest.new"
     end
   end
 end

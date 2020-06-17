@@ -17,6 +17,7 @@ require File.join(dir, "lib", "forest", "dependencies", "cgs")
 require File.join(dir, "lib", "forest", "dependencies", "ln")
 require File.join(dir, "lib", "forest", "dependencies", "runner")
 require File.join(dir, "lib", "forest", "dependencies", "data")
+require File.join(dir, "lib", "forest", "dependencies", "loops")
 
 require 'groundcover'
 
@@ -27,6 +28,7 @@ class DefaultDependencies < Forest::Dependencies
   include Forest::LN
   include Forest::Runner
   include Forest::Data
+  include Forest::Loops
   include Groundcover
 end
 
