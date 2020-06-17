@@ -12,15 +12,6 @@ class Forest
       @interpreter_stack_trace << options
     end
 
-    # Refines line and row on evaluate (the stack trace on call
-    # can be pretty far from the actual point where we have a problem)
-    def interpreter_update_stack_trace(options = {})
-      return unless @interpreter_stack_trace && @interpreter_stack_trace.last
-
-      stack = @interpreter_stack_trace.last
-      stack.merge! options
-    end
-
     def remove_stack_trace
       @interpreter_stack_trace.pop
     end

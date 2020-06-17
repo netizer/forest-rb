@@ -4,7 +4,7 @@ class Forest
       puts bold("Forest Error")
       puts "Message: #{message}"
       puts "Backtrace:"
-      puts stack_trace_text(interpreter_stack_trace)
+      puts stack_trace_text(interpreter_stack_trace.reverse)
       unless interpreter_stack_trace.first.to_s[/\.forest\Z/]
         puts "Original code:"
         puts file_content(interpreter_stack_trace.first)
