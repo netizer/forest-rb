@@ -31,7 +31,8 @@ class Forest
     end
 
 
-    def forest_keyword_call(children)
+    def forest_keyword_call(node)
+      children = node[:children]
       ensure_equal(children[0][:command], 'data', children[0])
 
       function_name = children[0][:children][0][:command]
@@ -48,20 +49,22 @@ class Forest
         command: function_name
       )
       unless public_methods.include?(method_name.to_sym)
-        rise_forest_code_error(children[0][:parent], no_method_error_message(function_name, method_name))
+        rise_forest_code_error(node, no_method_error_message(function_name, method_name))
       end
       result = public_send(method_name, body)
       remove_stack_trace
       result
     end
 
-    def forest_keyword_block(children)
+    def forest_keyword_block(node)
+      children = node[:children]
       children.map do |child|
         evaluate(child)
       end
     end
 
-    def forest_keyword_data(children)
+    def forest_keyword_data(node)
+      children = node[:children]
       children.map do |child|
         child[:command]
       end.join
@@ -90,11 +93,10 @@ class Forest
 
     def evaluate(node)
       method_name = "#{KEYWORD_PREFIX}#{node[:command]}"
-      interpreter_update_stack_trace(line: node[:line], row: node[:row])
       unless methods.include?(method_name.to_sym)
         rise_forest_code_error(node, unknown_keyword_error_message(node[:command]))
       end
-      send(method_name, node[:children])
+      send(method_name, node)
     end
 
     def parse_line(line, current_node, line_nr)
