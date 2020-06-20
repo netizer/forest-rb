@@ -27,7 +27,7 @@ class Forest
     end
 
     def eval_file_with_optional_frontend(file, glob)
-      print_general_error(missing_app_file_error_message(glob)) if file.nil?
+      raise_general_error(missing_app_file_error_message(glob)) if file.nil?
 
       extension = file.split(".").last
       if extension == 'forest'
@@ -78,7 +78,12 @@ class Forest
       matching_files = Dir.glob(glob)
       app_file = matching_files.first
       eval_file_with_optional_frontend(app_file, glob)
-      call_code_with_context(@runner_application['tasks'][command])
+      node = @runner_application['tasks'][command]
+      unless node
+        full_command = "forest app #{command_parts.join(' ')}"
+        raise_general_error(unknown_command_error_message(command, full_command, @interpreter_file))
+      end
+      call_code_with_context(node)
     end
 
     def runner__forest_resolve(children)

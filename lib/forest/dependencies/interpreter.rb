@@ -1,5 +1,9 @@
+require_relative 'ccp'
+
 class Forest
   module Interpreter
+    include Forest::CCP
+
     INDENTATION_BASE = 2
     KEYWORD_PREFIX = 'forest_keyword_'
     FUNCTION_PREFIX = 'forest_'
@@ -33,15 +37,11 @@ class Forest
       method_suffix = "#{FUNCTION_PREFIX}#{function_name_parts.last}"
 
       method_name = (function_name_parts[0..-2] + [method_suffix]).join('__')
-      interpreter_add_stack_trace(
-        line: children[0][:line],
-        row: children[0][:row],
-        file: interpreter_file,
-        command: function_name
-      )
+      interpreter_add_stack_trace(node)
       unless public_methods.include?(method_name.to_sym)
-        rise_forest_code_error(node, no_method_error_message(function_name, method_name))
+        raise_forest_code_error(node, no_method_error_message(function_name, method_name))
       end
+      ccp_ensure_permissions(function_name, node)
       result = public_send(method_name, body)
       remove_stack_trace
       result
@@ -85,7 +85,7 @@ class Forest
     def evaluate(node)
       method_name = "#{KEYWORD_PREFIX}#{node[:command]}"
       unless methods.include?(method_name.to_sym)
-        rise_forest_code_error(node, unknown_keyword_error_message(node[:command]))
+        raise_forest_code_error(node, unknown_keyword_error_message(node[:command]))
       end
       send(method_name, node)
     end
@@ -118,7 +118,8 @@ class Forest
         command: command,
         child_id: parent ? parent[:children].length : 0,
         line: options[:line],
-        row: options[:row]
+        row: options[:row],
+        file: @interpreter_file
       }
     end
 

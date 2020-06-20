@@ -11,5 +11,10 @@ class Forest
       hash = evaluate(node[:children][1])
       hash[key]
     end
+
+    def data__forest_array(node)
+      collection = evaluate(node)
+      collection.values
+    end
   end
 end
