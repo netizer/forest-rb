@@ -1,8 +1,0 @@
-call
-  data
-    testing.assert
-  block
-    data
-      some text
-    data
-      some text

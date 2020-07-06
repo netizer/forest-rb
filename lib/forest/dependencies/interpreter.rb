@@ -147,6 +147,7 @@ class Forest
 
     # Debugger
     def print_node(node)
+      puts "#{node[:file]}:#{node[:line]}" if node[:file]
       puts node_context_to_lines(node).join("\n")
     end
 
