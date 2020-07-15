@@ -1,6 +1,7 @@
 class Forest
   module BeautifulErrors
     def raise_forest_code_error(node, message)
+      puts
       puts bold("Forest Error")
       puts "Message: #{message}"
       if interpreter_stack_trace
@@ -163,6 +164,15 @@ class Forest
       "in the following code contains the ones mentioned above:\n" +
       file_content(previous_frame[:node]) +
       " * One of the mentioned permissions might be misspelled"
+    end
+
+    def assert_error_message(data1, data2)
+      "Assert error.\n" +
+      "The following 2 data sets are expected to be identical:\n" +
+      "The first:\n" +
+      "#{data1.inspect}\n" +
+      "The second:\n" +
+      "#{data2.inspect}\n"
     end
   end
 end

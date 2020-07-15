@@ -7,8 +7,7 @@ class Forest
       if data[0] == data[1]
         { result: true }
       else
-        puts "Assert mismatch: #{data.inspect}"
-        { result: false }
+        raise_forest_code_error(block[:parent], assert_error_message(data[0], data[1]))
       end
     end
 
