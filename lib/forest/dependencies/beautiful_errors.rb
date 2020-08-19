@@ -118,6 +118,7 @@ class Forest
       namespace_part = module_name ? "in the '#{module_name}'" : "in some"
       "Unknown forest action: '#{bold(function_name)}'.\n" +
       "Possible causes:\n" +
+      " * Maybe a typo?\n" +
       " * Maybe try to create the method '#{method_name}' #{namespace_part} capability module.\n" +
       " * If the method exists, then maybe its module is not included in the dependencies class passed to Forest.new"
     end
