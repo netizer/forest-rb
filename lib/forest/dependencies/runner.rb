@@ -7,6 +7,11 @@ class Forest
         name: 'Groundcover',
         forest_command: 'groundcover.parse_text_to_forest',
         method: :groundcover__forest_parse_to_forest
+      },
+      'lamb' => {
+        name: 'Lamb',
+        forest_command: 'lamb.parse_text_to_forest',
+        method: :lamb__forest_parse_to_forest
       }
     }.freeze
 

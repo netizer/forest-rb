@@ -21,6 +21,7 @@ require File.join(dir, "lib", "forest", "dependencies", "loops")
 require File.join(dir, "lib", "forest", "dependencies", "state")
 
 require 'groundcover'
+require 'lamb'
 
 class DefaultDependencies < Forest::Dependencies
   include Forest::Interpreter
@@ -32,6 +33,7 @@ class DefaultDependencies < Forest::Dependencies
   include Forest::Loops
   include Forest::State
   include Groundcover
+  include Lamb
 end
 
 command_parts = ARGV

@@ -3,6 +3,11 @@ PATH
   specs:
     groundcover (0.0.1)
 
+PATH
+  remote: ../lamb-rb
+  specs:
+    lamb (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -28,6 +33,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   groundcover!
+  lamb!
   rspec
 
 BUNDLED WITH
