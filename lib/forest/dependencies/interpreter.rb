@@ -25,6 +25,15 @@ class Forest
       evaluate(tree)
     end
 
+    def method_name_of(function_name)
+      function_name = "default.#{function_name}" unless function_name["."]
+      function_name_parts = function_name.split('.')
+
+      method_suffix = "#{FUNCTION_PREFIX}#{function_name_parts.last}"
+      namespace_part = function_name_parts[0..-2]
+
+      method_name = (namespace_part + [method_suffix]).join('__')
+    end
 
     def forest_keyword_call(node)
       children = node[:children]
@@ -33,12 +42,11 @@ class Forest
       function_name = children[0][:children][0][:command]
       body = children[1]
 
-      function_name_parts = function_name.split('.')
-      method_suffix = "#{FUNCTION_PREFIX}#{function_name_parts.last}"
-
-      method_name = (function_name_parts[0..-2] + [method_suffix]).join('__')
+      method_name = method_name_of(function_name)
       interpreter_add_stack_trace(node)
       unless public_methods.include?(method_name.to_sym)
+        # TODO: most likely we don't need it as this logic was moved
+        # to stages.check_function_calls
         raise_forest_code_error(node, no_method_error_message(function_name, method_name))
       end
       ccp_ensure_permissions(function_name, node)
@@ -152,12 +160,17 @@ class Forest
     end
 
     def node_context_to_lines(node)
+      @print_node_loop_control = []
       context = node_context(node)
       delta = context.last[:line].to_s.length - context.first[:line].to_s.length
       lines = []
       context.map do |line|
         justed_line_nr = line[:line].to_s.rjust(delta, ' ')
-        lines << "#{justed_line_nr}: #{line[:indent]}#{line[:command]}"
+        command = line[:command]
+        if command == "stages.skip"
+          command += " [#{line[:disengaged_command]}]"
+        end
+        lines << "#{justed_line_nr}: #{line[:indent]}#{command}"
       end
       lines[0] = "=> #{lines[0]}"
       lines[1..-1].each_with_index {|line, id| lines[id + 1] = "   #{line}" }
@@ -165,7 +178,13 @@ class Forest
     end
 
     def node_context(node, indent = "", result = [])
-      result << { line: node[:line], indent: indent, command: node[:command] }
+      if @print_node_loop_control.include?(node)
+        node[:children] = []
+        node[:command] = node[:command] + " LOOP"
+        return node
+      end
+      @print_node_loop_control << node
+      result << node.merge(indent: indent)
       return result unless node[:children]
 
       indent = indent + "  "

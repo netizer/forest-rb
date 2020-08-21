@@ -16,5 +16,11 @@ class Forest
       collection = evaluate(node)
       collection.values
     end
+
+    def data__forest_merge(node)
+      hash1 = evaluate(node[:children][0])
+      hash2 = evaluate(node[:children][1])
+      hash1.merge(hash2)
+    end
   end
 end

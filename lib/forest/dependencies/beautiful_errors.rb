@@ -17,13 +17,13 @@ class Forest
       end
       puts "Forest code (line numbers are from the original file, indentation reduced for clarity):"
       puts context_text(node)
-      exit 1
+      raise "Forest application stopped with a code error."
     end
 
     def raise_general_error(message)
       puts bold("Forest Error")
       puts message
-      exit 1
+      raise "Forest application stopped with a general error."
     end
 
     # UTILS
@@ -62,7 +62,7 @@ class Forest
     def stack_trace_text(stack)
       result = []
       stack.each do |frame|
-        result << "  #{frame[:file]}:#{frame[:line]}:#{frame[:row]} (#{frame[:command]})"
+        result << "  #{frame[:file]}:#{frame[:line]}:#{frame[:row]} (#{command_name(frame)})"
       end
       result[0] = bold(result[0])
       result.join(" called from: \n")
@@ -76,6 +76,15 @@ class Forest
         result << item unless item[:permissions].include? action
       end
       result
+    end
+
+    def command_name(frame)
+      if frame[:command] == "call"
+        command_name = frame[:children].first[:children].first[:command]
+        "#{frame[:command]}/#{command_name}"
+      else
+        frame[:command]
+      end
     end
 
     # MESSAGES
@@ -121,6 +130,16 @@ class Forest
       " * Maybe a typo?\n" +
       " * Maybe try to create the method '#{method_name}' #{namespace_part} capability module.\n" +
       " * If the method exists, then maybe its module is not included in the dependencies class passed to Forest.new"
+    end
+
+    def not_permitted_method_error_message(command)
+      "Not permitted keyword: #{bold(command)}.\n" +
+      "This keyword is defined but is not listed under permissions " +
+      "key for any execution stage in the call to Forest interpretter. " +
+      "Possible causes:\n" +
+      " * Maybe a typo?\n" +
+      " * Maybe try to include '#{command}' in the list " +
+      " of permitted keywords for an adequate stage of execution (e.g. runtime_stage_run)"
     end
 
     def permissions_error_message(action, ccp, node)
