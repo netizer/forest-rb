@@ -71,13 +71,6 @@ describe Forest do
         },
         core_lib_path: "../core-lib-forest"
       )
-      forest.cap :ip do |data, env|
-        if data[/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/]
-          data
-        else
-          env.error("Wrong IP address")
-        end
-      end
       forest.load("spec/fixtures/example_lamb_code/config.lamb")
       data = forest.run(flow: "run")
       expect(data).to eq(expected)

@@ -337,8 +337,7 @@ class Forest
       if data[/^http:\/\//]
         data
       else
-        byebug
-        env.error("Wrong IP address")
+        raise "Wrong IP address: '#{data}' in: #{node[:file]}:#{node[:line]}"
       end
     end
 
