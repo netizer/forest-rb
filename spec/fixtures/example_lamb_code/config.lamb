@@ -1,15 +1,15 @@
-development = merge: default, overrides.dev;
-production = merge: default, overrides.prod;
+development = merge: default, overrides.dev
+production = merge: default, overrides.prod
 
 private:
   default =
-    adapter = "postgresql";
-    pool = integer: (or: (envvar: "POOL";), "5";);
-    url = url: (envvar: "DATABASE_URL";);
+    adapter = "postgresql"
+    pool = integer: (or: (envvar: "POOL"), "5")
+    url = url: (envvar: "DATABASE_URL")
   overrides =
     dev =
       database = "development_database"
     prod =
       database = "production_database"
       username = "username"
-      password = envvar: "DATABASE_PASSWORD";
+      password = envvar: "DATABASE_PASSWORD"
