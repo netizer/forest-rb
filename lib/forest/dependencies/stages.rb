@@ -55,9 +55,6 @@ class Forest
       previous_stage = @current_stage
       @current_stage = stage
       result = run_single_stage(@current_stage, node)
-      # TODO: we should organize stages in a better way
-      # so we didn't have to do this.
-      node = node[:parent][:children][1]
       @current_stage = previous_stage
       if @current_stage
         run_single_stage(@current_stage, node)
