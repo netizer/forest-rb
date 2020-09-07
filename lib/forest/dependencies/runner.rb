@@ -60,7 +60,7 @@ class Forest
     def eval_file_with_optional_frontend(file, glob = nil)
       tree = parse_file_with_optional_frontend(file, glob)
       @root = tree
-      check_function_calls(tree)
+      check_tree(tree)
       evaluate(tree)
     end
 

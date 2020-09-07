@@ -134,22 +134,40 @@ class Forest
       wrapper
     end
 
-    def check_function_calls(tree)
-      if tree[:command] == "call"
-        command = tree[:children][0][:children][0][:command]
-        permissions = @global_options[:init][:permissions]
-        return true unless permissions
-
-        all_commands = permissions.values.flatten.uniq.map(&:to_s)
-        method_name = method_name_of(command)
-        if !public_methods.include?(method_name.to_sym)
-          raise_forest_code_error(tree, no_method_error_message(command, method_name))
-        elsif !all_commands.include?(command)
-          raise_forest_code_error(tree, not_permitted_method_error_message(command))
+    # Notice that we modify stacktrace here,
+    # but at the end of the function
+    # the stacktrace is back at the initial state
+    def check_tree(tree)
+      with_stacktrace(tree) do
+        check_function_calls(tree) if tree[:command] == "call"
+        tree[:children].map do |child|
+          check_tree(child)
         end
       end
-      tree[:children].map do |child|
-        check_function_calls(child)
+    end
+
+    def check_function_calls(tree)
+      command = tree[:children][0][:children][0][:command]
+      permissions = @global_options[:init][:permissions]
+      return unless permissions
+
+      all_commands = permissions.values.flatten.uniq.map(&:to_s)
+      method_name = method_name_of(command)
+      if !public_methods.include?(method_name.to_sym)
+        raise_forest_code_error(tree, no_method_error_message(command, method_name))
+      elsif !all_commands.include?(command)
+        raise_forest_code_error(tree, not_permitted_method_error_message(command))
+      end
+    end
+
+    def with_stacktrace(node)
+      if node[:command] == "call"
+        interpreter_add_stack_trace(node)
+        result = yield
+        remove_stack_trace
+        result
+      else
+        yield
       end
     end
   end

@@ -46,7 +46,7 @@ class Forest
       interpreter_add_stack_trace(node)
       unless public_methods.include?(method_name.to_sym)
         # TODO: most likely we don't need it as this logic was moved
-        # to stages.check_function_calls
+        # to stages.check_tree
         raise_forest_code_error(node, no_method_error_message(function_name, method_name))
       end
       ccp_ensure_permissions(function_name, node)
