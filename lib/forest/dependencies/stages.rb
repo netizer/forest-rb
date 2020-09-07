@@ -41,10 +41,14 @@ class Forest
       stages_with_flow(stage, block)
     end
 
-    def stages__forest_with_stage(node)
-      stage = node[:children][0][:children][0][:command]
+    def stages__forest_with_stages(node)
+      stages = evaluate(node[:children][0])
       body = node[:children][1]
-      run_stage(stage.to_sym, body)
+      result = nil
+      stages.each do |stage|
+        result = run_stage(stage.to_sym, body)
+      end
+      result
     end
 
     def stages__forest_skip(node)

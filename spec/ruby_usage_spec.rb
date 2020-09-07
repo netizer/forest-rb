@@ -65,9 +65,9 @@ describe Forest do
         dependencies: TestDependencies.new,
         env: env_vars,
         permissions: {
-          macro_stage: ["context", "private", "format_call", "get", "testing.reversed_context", "stages.with_stage", "stages.skip"],
-          runtime_stage_run: ["integer", "or", "url", "envvar", "merge", "stages.type_stage", "cgs.set", "cgs.set_value", "cgs.get", "cgs.context", "stages.with_stage", "stages.skip", "cgs.last", "data.hash_get"],
-          stageless: ["stages.runtime_stage_run"]
+          macro_stage: ["context", "private", "format_call", "get", "testing.reversed_context", "stages.skip"],
+          runtime_stage_run: ["integer", "or", "url", "envvar", "merge", "stages.type_stage", "cgs.set", "cgs.set_value", "cgs.get", "cgs.context", "stages.skip", "cgs.last", "data.hash_get"],
+          stageless: ["stages.with_stages"]
         },
         core_lib_path: "../core-lib-forest"
       )
