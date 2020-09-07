@@ -1,5 +1,5 @@
 require "spec_helper"
-require "forest_interface"
+require "forest"
 require "dependencies"
 require "forest/dependencies/interpreter"
 require "forest/dependencies/testing"
@@ -61,7 +61,7 @@ describe Forest do
     end
 
     it 'processes a lamb file' do
-      forest = ForestInterface.new(
+      forest = Forest.new(
         dependencies: TestDependencies.new,
         env: env_vars,
         permissions: {

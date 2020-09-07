@@ -6,18 +6,22 @@ class Forest
   attr_accessor :dependencies
   # options: dependencies, file
   def initialize(options)
-    @init_options = options
-    @dependencies = @init_options[:dependencies]
+    @options = options
+    @dependencies = @options[:dependencies]
     dependencies.set_global_options(init: options)
   end
 
+  def load(path)
+    @options[:file] = path
+  end
+
   def run(options = {})
-    @run_options = options
-    dependencies.eval_file(@init_options[:file])
+    @options.merge!(options)
+    dependencies.eval_file_with_optional_frontend(@options[:file])
   end
 
   def run_with_wrapper(wrapper)
-    dependencies.eval_file_with_wrapper(@init_options[:file], wrapper)
+    dependencies.eval_file_with_wrapper(@options[:file], wrapper)
   end
 
   def eval_file_with_optional_frontend(file)
