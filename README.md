@@ -31,7 +31,7 @@ There are 3 layers of software written with Forest.
 2. Language backend - the code the frontend produces (Forest).
 3. Host lanugage - the code (in Ruby, JS, Python, C, ... but, currently only Ruby) that passes host-language features (IO, threads, Iternet access) to Forest environment.
 
-## How does it look?
+## How does it look and what does it mean?
 
 The following Forest code creates a function `first_function` that prints "defined first" text.
 
@@ -56,6 +56,18 @@ call
               data
                 defined first
 ```      
+
+Now, what does it mean?  
+
+- `call`, `data`, and `block` are low-level keywords (or internal nodes). If you look at the Forest code, that's all there is. We call them internal nodes, because that's what they are in the tree tructure of the program.
+  - `call` is for describing calls to high-level keywords. It has always 2 children - data representing the name of the keyword, and the node that will be passed to it.
+  - `data` represents some data. It might be a function name, or a name of a variable, or anything else.
+  - `block` is just for grouping several nodes together. Some high-level keywords need a block as the second child, because they operate on sequences of calls (e.g. `cgs.context`)
+- `cgs.context`, `cgs.set`, `ln.later`, and `testing.log` are high-level keywords. If we use the word `keyword` without specifying if it's high or low-level, that's what we mean. low-level keywords are boring, so we don't refer to them as just `keywords`.
+  - `cgs.context` creates a new context which is one layer of the lexical scope of the program. All the variables belong to some context, and when you call a function, we search for it up the context stack.
+  - `cgs.set` sets a variable, but in Forest, we use contexts as hashes, so we can well enough treat it as setting a key-value pair of some hash.
+  - `ln.later` creates a function, that can be called with `ln.now`.
+  - `testing.log` is just another keyword that can be used in testing.
 
 ## Usage
 
