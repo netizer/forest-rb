@@ -132,14 +132,22 @@ class Forest
       " * If the method exists, then maybe its module is not included in the dependencies class passed to Forest.new"
     end
 
-    def not_permitted_method_error_message(command)
+    def not_permitted_method_error_message(command, stageless)
+      stagelessness = stageless ? "stageless" : "other than stageless"
       "Not permitted keyword: #{bold(command)}.\n" +
-      "This keyword is defined but is not listed under permissions " +
-      "key for any execution stage in the call to Forest interpretter. " +
+      "This keyword is defined but is not listed " +
+      "under #{bold(stagelessness)} permissions " +
+      "key in the call to Forest interpretter. " +
       "Possible causes:\n" +
       " * Maybe a typo?\n" +
       " * Maybe try to include '#{command}' in the list " +
-      " of permitted keywords for an adequate stage of execution (e.g. runtime_stage_run)"
+      "of permitted keywords " +
+      if stageless
+        "under 'stageless' key"
+      else
+        "for an adequate stage of execution " +
+        "(e.g. under 'runtime_stage_run' key, but not under 'stageless' key)"
+      end
     end
 
     def permissions_error_message(action, ccp, node)

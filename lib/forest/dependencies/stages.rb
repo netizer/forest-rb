@@ -133,26 +133,40 @@ class Forest
     # Notice that we modify stacktrace here,
     # but at the end of the function
     # the stacktrace is back at the initial state
-    def check_tree(tree)
+    # Also, have in mind that we check only
+    # for stageless permissions until we get to with_stages
+    # and after that we check only permissions apart from stageless
+    def check_tree(tree, stageless = true)
       with_stacktrace(tree) do
-        check_function_calls(tree) if tree[:command] == "call"
+        if tree[:command] == "call"
+          check_function_calls(tree, stageless)
+          command_name = tree[:children][0][:children][0][:command]
+          stageless = false if command_name == "stages.with_stages"
+        end
         tree[:children].map do |child|
-          check_tree(child)
+          check_tree(child, stageless)
         end
       end
     end
 
-    def check_function_calls(tree)
+    def check_function_calls(tree, stageless)
       command = tree[:children][0][:children][0][:command]
       permissions = @global_options[:init][:permissions]
       return unless permissions
+
+      permissions =
+        if stageless
+          permissions.select { |k, _v| k == :stageless }
+        else
+          permissions.select { |k, _v| k != :stageless }
+        end
 
       all_commands = permissions.values.flatten.uniq.map(&:to_s)
       method_name = method_name_of(command)
       if !public_methods.include?(method_name.to_sym)
         raise_forest_code_error(tree, no_method_error_message(command, method_name))
       elsif !all_commands.include?(command)
-        raise_forest_code_error(tree, not_permitted_method_error_message(command))
+        raise_forest_code_error(tree, not_permitted_method_error_message(command, stageless))
       end
     end
 
