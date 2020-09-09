@@ -1,37 +1,83 @@
 # Forest
 
-## Description
+Forest is a programming language. The main goal for it is to make static analysis as easy as possible.
 
-Forest is a programming language. It has some cool properties, and a couple of surprising ones. It is not meant to be used directly to write programs, but rather other languages can be translated to it.
+Simplicity for static analysis goes against language readability and terseness. That's why Forest is a backend of a couple of other languages. One of them is Lamb (another is Groudcover). You can write the code in Lamb which has a goal of making programming a pure pleasure. Then the Lamb compiler produces Forest code, and you can use it for static analysis.
 
-If you were ever programming and thinking that some aspects of the language (e.g. readable syntax) are good for the developer, but other ones (e.g. memory management, performance, ...) seem like something that could be handled better by some software than directly by a human being, then that's the exact kind of thinking that Forest was born from. The main goal is to separate the low level operations that can be handled and optimised automatically depending on the platform and the computation itself.
+If you want to write a new porgramming language, and its syntax is what matters to you the most, it might be a good call to implement it as a front-end of Forest.
 
-Forest is an embedded language in the sense that it's embedded in another language. If you program in Forest, you focus on low-level operations (their performance, memory management, ...) when preparing an environment for the Forest code in the host language, and you focus on the computation itself (potentially with meta-data for the compiler) when writing the code in Forest.
+## Features that you might like
 
-There are 3 layers of the whole Forest environment:
-1. `forest-runner-*` - has a function `run_forest(file_path, stages, options)` that calls `forest-interpreter` and all the libraries. This module is the interface for any script written in forest or any language that translates to forest. Currently the only other language is `lamb`, and you can call the script written in it in the following way: `run(lang, file_path, stages, options)`. In the future it will be possible to pass `compile: true` as `options` and cause a compilation of the script in `forest` (or lany language that translates to `forest`) to the host language. This could potentially significantly improve the performence as the compilation process will run optimisations on the code and as `forest` is so simple, static analysis of the code should enable significant performance improvements.
-2. `forest-interpreter-*` (`forest-host-rb`, `forest-host-js`, ...) - it provides one function that gets a stream of code and returns an AST (Abstract Syntax Tree) with leafs being text and internal nodes being one of 3 keywords (`code`, `block`, `data`). This function can be used in several ways:
-- to process the main file of a package (by `forest-runner-*`)
-- `forest` libraries can use it to parse other files
-- `forest` code can contain snippets in `forest` as data and have it evaluated later.
-3. `forest-subcore-*` - functions for `forest-runner-*` and `forest-interpreter-*`, for example to iterate over characters from the forest-file. s
-4. `forest-core-*` - core library; functions that can be found in almost every forest script. `forest-runner-*` and `forest-interpreter-*` often call these functions directly, for example to iterate over characters from the forest-file.
+Forest environment (so Forest + Lamb + Groundcover) has some nice properties. The following list covers general ideas. Some of them might not be 100% ready yet. I'll mention when that's the case.
 
-To run the code written in forest, use the following code:
+1. Multi-stage evaluation - Macro resolution is just a stage, another is runtime. We will have type inference stage pretty soon, and optimisation stage after that. As Forest is easy to staticly analise, creating code that takes Forest code and produces Forest code is easy. Every stage apart from the last one (runtime) does exactly that.
+2. Security - Imagine being absolutely sure that the tests you're running won't try to reach the production server. But I mean, not just knowing  because you know the code, but knowing that it's absolutely impossible, because the code doesn't even have access to functions that could do that. As analysing Forest code is so easy, the function than lists all features that the given code depends on takes less than 50 lines of code (`check_tree` function in `lib/forest/dependenncies/stages.rb`). You can list all features that you feel comfortable passing to certain code, and if that code depends on something else, you can stub it.
+3. Developer productivity - The split between frontend and backend languages as a first-class citizen means that the frontend language (e.g. Lamb) can be focused on developer productivity without compromise. We don't need 2 different ways to express something because in different circumstances one or the other is more performant. We can just build the code that recognises these circumstances and optimises the code as part of a performance stage of compilation (as mentioned in the point 1, the features for the performance stage will arrive shortly).
+
+## Core properties of Forest
+
+### Great for static analysis
+
+Easy static analysis means that the language has to be simple. Forest is simple. The lexer and parser together (`lib/forest/dependencies/interpreter.rb`) have less than 200 lines of code. It has only 3 low-level keywords: `call`, `block`, and `data`. Calling them keywords might be a bit of a stretch in the same sense as adding the word `keyword` in front of every keyword in some language wouldn't really make it a one-keyword language, but these 3 words and strings are the only things you'll see in the Forest code.
+
+### Embedded
+
+It is an embedded language, so you can use Forest from another languages. Currently only Ruby is supported. There are 2 or 3 milestones ahead before it will make sense to support other languages (mostly I need to move as much of the Ruby code to Forest itself).
+
+### Frontend languages
+
+There are 3 layers of software written with Forest.
+1. Language frontend - the code the developer writes (e.g. in Lamb).
+2. Language backend - the code the frontend produces (Forest).
+3. Host lanugage - the code (in Ruby, JS, Python, C, ... but, currently only Ruby) that passes host-language features (IO, threads, Iternet access) to Forest environment.
+
+## How does it look?
+
+The following Forest code creates a function `first_function` that prints "defined first" text.
+
+```forest
+call
+  data
+    cgs.context
+  block
+    call
+      data
+        cgs.set
+      block
+        data
+          first_function
+        call
+          data
+            ln.later
+          call
+            data
+              testing.log
+            block
+              data
+                defined first
+```      
+
+## Usage
+
+```bash
+bin/forest.rb FOREST_FILE
 ```
-runner = Runner.new(
-  file: 'path-to-main.forest`
-  dependencies: {
-    core: Core.new
-  }
-)
-runner.run([:macro, :type, :eval])
+
+You can also install Forest in your system, e.g. by cloning `forest-rb` and `core-lib-forest` to the same directory and then running the following commands:
+
+```bash
+ln -s ~/4st/forest-rb/bin/forest.rb /usr/local/bin/forest
+ln -s ~/4st/core-lib-forest ~/forestcorelib
 ```
 
-## Installation
+(assuming that the `forest-rb` and `core-lib-forest` repos are in `~/4st/` directory).
 
-You can use this library as a gem (just add `gem forest-rb` to your `Gemfile` and run `bundle install`), or you can install a `forest` command. To do that, you could for example (instructions are for MacOS):
-1. Clone this repository (e.g. to `~/xyz/forest-rb`)
-2. Go to `/usr/local/bin`
-3. Run `ln -s ~/xyz/forest-rb/lib/command.rb forest`
-4. Done. From now on you can just use `forest` command (e.g. `forest help`)
+Then you can, for example, clone `core-lib-forest` and call `forest app test` to run all tests.
+
+## Status of the language
+
+Forest is a work in progress. Lots of things can change, but not syntax, which won't **ever** change. I can bet on that (but I'll gladly loose that bet if I'll see that there is a better syntax for static analysis).
+
+## Community
+
+If you like this language, and you'd like to use it or just play with it, feel free to create github issues whenever something doesn't work, or if you just have questions. I'd love to have a conversation with you, but I also like the async and public nature (more people benefit from a conversations) of communication through github issues.
