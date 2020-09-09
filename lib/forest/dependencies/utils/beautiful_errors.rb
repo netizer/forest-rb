@@ -9,7 +9,7 @@ class Forest
         puts stack_trace_text(interpreter_stack_trace.reverse)
         extension = interpreter_stack_trace.last[:file].split('.').last
         if extension != 'forest'
-          interpreter_data = Forest::Runner::INTERPRETERS[extension]
+          interpreter_data = languages[extension]
           interpreter = interpreter_data ? interpreter_data[:name] : extension
           puts "Original code (#{interpreter}):"
           puts file_content(interpreter_stack_trace.last)

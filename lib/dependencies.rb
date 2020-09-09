@@ -1,12 +1,17 @@
-require_relative 'forest/dependencies/utils/beautiful_errors'
+require_relative 'forest/dependencies/utils/language_register'
+require_relative 'forest/dependencies/utils/forest_traversal'
 require_relative 'forest/dependencies/utils/forest_manipulation'
+require_relative 'forest/dependencies/utils/beautiful_errors'
 
 class Forest
   class Dependencies
-    include BeautifulErrors
+    extend LanguageRegister
+    include ForestTraversal
     include ForestManipulation
+    include BeautifulErrors
 
-    def initialize
+    def languages
+      self.class.languages
     end
   end
 end

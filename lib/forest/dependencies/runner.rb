@@ -2,19 +2,6 @@ require 'fileutils'
 
 class Forest
   module Runner
-    INTERPRETERS = {
-      'gc' => {
-        name: 'Groundcover',
-        forest_command: 'groundcover.parse_text_to_forest',
-        method: :groundcover__forest_parse_to_forest
-      },
-      'lamb' => {
-        name: 'Lamb',
-        forest_command: 'lamb.parse_text_to_forest',
-        method: :lamb__forest_parse_to_forest
-      }
-    }.freeze
-
     attr_accessor :runner_application
     attr_accessor :runner_command_parts
 
@@ -83,7 +70,7 @@ class Forest
     end
 
     def parse_file_with_frontend(file, extension)
-      interpreter = INTERPRETERS[extension][:method]
+      interpreter = languages[extension][:method]
       @interpreter_file = file
       public_send(interpreter, file)
     end
