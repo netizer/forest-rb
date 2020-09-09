@@ -12,7 +12,7 @@ class Forest
 
     FLOWS = {
       test: {
-        macro: "macro_stage",
+        macro: "macro_stage", # stage: stage_variant
         type: "type_stage",
         runtime: "runtime_stage_test"
       },
@@ -60,11 +60,7 @@ class Forest
       @current_stage = stage
       result = run_single_stage(@current_stage, node)
       @current_stage = previous_stage
-      if @current_stage
-        run_single_stage(@current_stage, node)
-      else
-        result
-      end
+      result
     end
 
     def run_single_stage(stage, node)
