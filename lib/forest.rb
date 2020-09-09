@@ -8,15 +8,17 @@ class Forest
   def initialize(options)
     @options = options
     @dependencies = @options[:dependencies]
-    dependencies.set_global_options(init: options)
+    dependencies.set_global_options(@options)
   end
 
   def load(path)
     @options[:file] = path
+    dependencies.set_global_options(@options)
   end
 
   def run(options = {})
     @options.merge!(options)
+    dependencies.set_global_options(@options)
     dependencies.eval_file_with_optional_frontend(@options[:file])
   end
 
@@ -29,10 +31,8 @@ class Forest
   end
 
   def command(options = {})
-    @run_options = options
-    dependencies.run_command(
-      init_options: @init_options,
-      run_options: @run_options
-    )
+    @options = @options.merge(options)
+    dependencies.set_global_options(@options)
+    dependencies.run_command
   end
 end

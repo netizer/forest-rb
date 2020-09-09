@@ -64,7 +64,7 @@ class Forest
     end
 
     def run_single_stage(stage, node)
-      permissions_options = @global_options[:init][:permissions]
+      permissions_options = @global_options[:permissions]
       permissions_per_stage = permissions_options[stage]
       node = clutch(node, permissions_per_stage)
       evaluate(node)
@@ -101,8 +101,8 @@ class Forest
     end
 
     def stages_wrap(tree)
-      core_lib_path = @global_options[:init][:core_lib_path]
-      @current_flow = @global_options[:init][:flow].to_sym if @global_options[:init][:flow]
+      core_lib_path = @global_options[:core_lib_path]
+      @current_flow = @global_options[:flow].to_sym if @global_options[:flow]
       if current_template
         wrapper_path = File.join(core_lib_path, "templates",
           current_template)
@@ -151,7 +151,7 @@ class Forest
 
     def check_function_calls(tree, stageless)
       command = tree[:children][0][:children][0][:command]
-      permissions = @global_options[:init][:permissions]
+      permissions = @global_options[:permissions]
       return unless permissions
 
       permissions =

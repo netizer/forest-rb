@@ -84,7 +84,7 @@ class Forest
     # in the permissions list
     def default__forest_format_call(node)
       base_node = node[:parent]
-      permissions = @global_options[:init][:permissions]
+      permissions = @global_options[:permissions]
       all_commands = permissions.values.flatten.uniq
       command = node[:children][0][:children][0][:command]
       evaluate(node[:children][1])
@@ -125,9 +125,9 @@ class Forest
 
     def default__forest_envvar(node)
       variable = evaluate(node)[0]
-      @global_options[:init] &&
-        @global_options[:init][:env] &&
-        @global_options[:init][:env][variable]
+      @global_options &&
+        @global_options[:env] &&
+        @global_options[:env][variable]
     end
 
     def default__forest_merge(node)

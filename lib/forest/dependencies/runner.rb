@@ -80,11 +80,10 @@ class Forest
       @global_options.merge!(options)
     end
 
-    def run_command(options)
-      @options = options
-      command_parts = options[:run_options][:command_parts]
+    def run_command
+      command_parts = @global_options[:command_parts]
       command = command_parts.shift
-      send("command_#{command}", command_parts, options)
+      send("command_#{command}", command_parts)
     end
 
     def load_library
@@ -94,10 +93,10 @@ class Forest
       eval_file_with_optional_frontend(app_file, glob)
     end
 
-    def command_app(command_parts, options)
+    def command_app(command_parts)
       @runner_command_parts = command_parts
       command = command_parts[0]
-      glob = "#{options[:run_options][:dir]}/app.*"
+      glob = "#{@global_options[:dir]}/app.*"
       matching_files = Dir.glob(glob)
       app_file = matching_files.first
       eval_file_with_optional_frontend(app_file, glob)
