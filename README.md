@@ -6,6 +6,12 @@ Simplicity for static analysis goes against language readability and terseness. 
 
 If you want to write a new porgramming language, and its syntax is what matters to you the most, it might be a good call to implement it as a front-end of Forest.
 
+The following repositories are closely related to tthis one:
+- https://github.com/netizer/lamb-rb
+- https://github.com/netizer/groundcover-rb
+- https://github.com/netizer/core-lib-forest
+- https://github.com/netizer/forest-utils
+
 ## Features that you might like
 
 Forest environment (so Forest + Lamb + Groundcover) has some nice properties. The following list covers general ideas. Some of them might not be 100% ready yet. I'll mention when that's the case.
@@ -92,4 +98,4 @@ Forest is a work in progress. Lots of things can change, but not syntax, which w
 
 ## Community
 
-If you like this language, and you'd like to use it or just play with it, feel free to create github issues whenever something doesn't work, or if you just have questions. I'd love to have a conversation with you, but I also like the async and public nature (more people benefit from a conversations) of communication through github issues.
+If you like this language, and you'd like to use it or just play with it, feel free to create github issues whenever something doesn't work, or if you just have questions. I'd love to have a conversation with you, but I also like the async and public nature (more people benefit from a conversations) of communication through github issues. A good starting point to play with Forest and with Groundcover or Forest is to follow the instructions at https://github.com/netizer/forest-utils
